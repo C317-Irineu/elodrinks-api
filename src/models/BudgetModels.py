@@ -1,0 +1,42 @@
+from typing import Optional, List
+from uuid import UUID
+from pydantic import BaseModel, Field
+
+class BudgetDetails(BaseModel):
+    descricao: str
+    type: str
+    date: str
+    num_barmans: int
+    nun_guests: int
+    time: float
+    package: str
+    extras: Optional[List[str]] = None
+    
+class BudgetDetailsUpdate(BaseModel):
+    descricao: Optional[str] = None
+    type: Optional[str] = None
+    date: Optional[str] = None
+    num_barmans: Optional[int] = None
+    num_guests: Optional[int] = None
+    time: Optional[float] = None
+    package: Optional[str] = None
+    extras: Optional[List[str]] = None
+    
+class BudgetIn(BaseModel):
+    name: str
+    email: str = Field(..., regex=r"^.+@.+\\..+$")
+    phone: str
+    budget: BudgetDetails
+    
+class BudgetUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = Field(None, regex=r"^.+@.+\\..+$")
+    phone: Optional[str] = None
+    budget: Optional[BudgetDetailsUpdate] = None
+
+class Budget(BaseModel):
+    id: str = Field(alias="_id")
+    name: str
+    email: str
+    phone: str
+    budget: BudgetDetails
