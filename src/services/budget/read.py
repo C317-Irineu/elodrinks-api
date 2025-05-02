@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from services.mongo import connect
+from src.services.mongo import connect
 from typing import List
 
 async def get_all_budgets() -> List[dict]:

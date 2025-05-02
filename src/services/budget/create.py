@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from src.services.mongo import connect
-from models.BudgetModels import BudgetIn
+from src.models.BudgetModels import BudgetIn
 
 async def create_budget(budget: BudgetIn) -> str:
     collection, client = connect("budgets")
