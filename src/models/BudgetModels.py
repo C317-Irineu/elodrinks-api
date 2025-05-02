@@ -24,14 +24,14 @@ class BudgetDetailsUpdate(BaseModel):
     
 class BudgetIn(BaseModel):
     name: str
-    email: str = Field(..., regex=r"^.+@.+\\..+$")
+    email: str = Field(..., pattern=r"^.+@.+\..+$")
     phone: str
     budget: BudgetDetails
     status: str = "Pendente"
     
 class BudgetUpdate(BaseModel):
     name: Optional[str] = None
-    email: Optional[str] = Field(None, regex=r"^.+@.+\\..+$")
+    email: str = Field(..., pattern=r"^.+@.+\..+$")
     phone: Optional[str] = None
     budget: Optional[BudgetDetailsUpdate] = None
 

@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from services.mongo import connect
+from src.services.mongo import connect
 from models.BudgetModels import BudgetIn
 
 async def create_budget(budget: BudgetIn) -> str:
