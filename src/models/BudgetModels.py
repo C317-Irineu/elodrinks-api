@@ -3,17 +3,17 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 
 class BudgetDetails(BaseModel):
-    descricao: str
+    description: str
     type: str
     date: str
     num_barmans: int
-    nun_guests: int
+    num_guests: int
     time: float
     package: str
     extras: Optional[List[str]] = None
     
 class BudgetDetailsUpdate(BaseModel):
-    descricao: Optional[str] = None
+    description: Optional[str] = None
     type: Optional[str] = None
     date: Optional[str] = None
     num_barmans: Optional[int] = None
@@ -27,6 +27,7 @@ class BudgetIn(BaseModel):
     email: str = Field(..., regex=r"^.+@.+\\..+$")
     phone: str
     budget: BudgetDetails
+    status: str = "Pendente"
     
 class BudgetUpdate(BaseModel):
     name: Optional[str] = None
@@ -40,3 +41,4 @@ class Budget(BaseModel):
     email: str
     phone: str
     budget: BudgetDetails
+    status: str
