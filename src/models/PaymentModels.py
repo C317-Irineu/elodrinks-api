@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 
 class Item(BaseModel):
@@ -17,8 +17,7 @@ class BackUrls(BaseModel):
 class PaymentPreference(BaseModel):
     items: List[Item]
     payer: Optional[Dict[str, Any]] = None
-    notification_url: Optional[HttpUrl] = None
+    back_urls: Optional[BackUrls] = None
     external_reference: Optional[str] = None
     binary_mode: bool = False
-    back_urls: Optional[BackUrls] = None
     auto_return: Optional[str] = None
