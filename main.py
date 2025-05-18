@@ -2,10 +2,12 @@ from fastapi import FastAPI, Security
 from fastapi.middleware.cors import CORSMiddleware
 
 # from src.routers.userRouter import router as userRouter  
+from src.routes.payment.create import router as payment_router
 
 app = FastAPI()
 
 # app.include_router(userRouter)  
+app.include_router(payment_router)
 
 app.add_middleware(
     CORSMiddleware,
