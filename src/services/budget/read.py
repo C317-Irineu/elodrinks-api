@@ -1,6 +1,7 @@
 from fastapi import HTTPException
-from services.mongo import connect
+from src.services.mongo import connect
 from typing import List
+from bson import ObjectId
 
 async def get_all_budgets() -> List[dict]:
     collection, client = connect("budgets")
@@ -13,8 +14,6 @@ async def get_all_budgets() -> List[dict]:
         return budgets
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao buscar orçamentos: {e}")
-    finally:
-        client.close()
 
 async def get_pending_budgets() -> List[dict]:
     collection, client = connect("budgets")
@@ -27,5 +26,14 @@ async def get_pending_budgets() -> List[dict]:
         return budgets
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao buscar orçamentos pendentes: {e}")
-    finally:
-        client.close()
+    
+async def get_budget_by_id(budget_id: str) -> dict:
+    collection, client = connect("budgets")
+    try:
+        budget = collection.find_one({"_id": ObjectId(budget_id)})
+        if not budget:
+            raise HTTPException(status_code=404, detail="Orçamento não encontrado")
+        budget["_id"] = str(budget["_id"])
+        return budget
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao buscar orçamento: {e}")

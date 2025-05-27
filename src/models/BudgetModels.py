@@ -1,6 +1,5 @@
 from typing import Optional, List
-from uuid import UUID
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 
 class BudgetDetails(BaseModel):
     description: str
@@ -24,16 +23,16 @@ class BudgetDetailsUpdate(BaseModel):
     
 class BudgetIn(BaseModel):
     name: str
-    email: str = Field(..., regex=r"^.+@.+\\..+$")
+    email: EmailStr
     phone: str
     budget: BudgetDetails
     status: str = "Pendente"
+    value: Optional[float] = None
     
 class BudgetUpdate(BaseModel):
-    name: Optional[str] = None
-    email: Optional[str] = Field(None, regex=r"^.+@.+\\..+$")
-    phone: Optional[str] = None
-    budget: Optional[BudgetDetailsUpdate] = None
+    id: str = Field(alias="_id")
+    new_status: str
+    value: Optional[float] = None
 
 class Budget(BaseModel):
     id: str = Field(alias="_id")
@@ -42,3 +41,4 @@ class Budget(BaseModel):
     phone: str
     budget: BudgetDetails
     status: str
+    value: Optional[float] = None
