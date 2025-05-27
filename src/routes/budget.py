@@ -1,11 +1,16 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+import mercadopago
 from src.models.BudgetModels import BudgetIn, BudgetUpdate
 from src.models.MailModels import EmailIn, EmailDetails
 from src.services.budget.create import create_budget, update_budget_status_and_value
 from src.services.budget.read import get_all_budgets, get_pending_budgets, get_budget_by_id
 from src.services.payment import create_preference
 from src.services.email import send_email
+from dotenv import load_dotenv
 
+load_dotenv()
+
+sdk = mercadopago.SDK(os.getenv("MERCADO_PAGO_ACCESS_TOKEN"))
 
 router = APIRouter(prefix="/budget", tags=["budget"])
 
@@ -76,6 +81,7 @@ async def send_budget_email_route(emailIn: EmailIn):
             "auto_return": "approved"
         }
         
+        #TODO: Implementar logica de pegar o external reference como id do orçamento
         link = create_preference(preference).get("initPoint")
         
         email_details = EmailDetails(
@@ -94,3 +100,33 @@ async def send_budget_email_route(emailIn: EmailIn):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+@router.post("/webhook")
+async def webhook(request: Request):
+    body = await request.json()
+    
+    if "type" in body and body["type"] == "payment":
+        payment_id = body["data"]["id"]
+
+        try:
+            payment_info = sdk.payment().get(payment_id)
+            status = payment_info["response"]["status"]
+            external_reference = payment_info["response"]["external_reference"]
+
+            print(f"Pagamento recebido: ID={payment_id}, status={status}, ref={external_reference}")
+
+            #TODO: Implementar logica de pegar o external reference como id do orçamento
+            update_data = BudgetUpdate(
+                id=external_reference,
+                status="paid" if status == "approved" else "failed"
+            )
+            
+            await update_budget_status_and_value(update_data)
+            
+            return {"message": "Notificação processada com sucesso"}
+        
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Erro ao processar pagamento: {str(e)}")
+    
+    return {"message": "Tipo de notificação não tratada"}
