@@ -1,6 +1,6 @@
 # EloDrinks API
 
-**Serviço de API para o projeto EloDrinks da matéria C317**
+**Serviço de API para o projeto EloDrinks da matéria C317 - Inatel**
 
 ## Descrição
 Esta é uma API desenvolvida em **FastAPI** que recebe informações sobre o orçamento, realiza os calculos necessários e controla os processos de pagamento.
