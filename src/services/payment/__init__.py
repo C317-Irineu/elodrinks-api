@@ -1,1 +1,1 @@
-from .create import create_payment_preference
+from .mercadopago import create_preference

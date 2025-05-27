@@ -3,6 +3,7 @@ from src.models.BudgetModels import BudgetIn, BudgetUpdate
 from src.models.MailModels import EmailIn, EmailDetails
 from src.services.budget.create import create_budget, update_budget_status_and_value
 from src.services.budget.read import get_all_budgets, get_pending_budgets, get_budget_by_id
+from src.services.payment import create_preference
 from src.services.email import send_email
 
 
@@ -64,6 +65,18 @@ async def send_budget_email_route(emailIn: EmailIn):
         budget = await get_budget_by_id(emailIn.id)
         if not budget:
             raise HTTPException(status_code=404, detail="Orçamento não encontrado")
+            
+        preference = {
+            "title": f"Orçamento EloDrinks - {budget['name']}",
+            "description": f"Orçamento para {budget['budget']['type']} na data {budget['budget']['date']}",
+            "unit_price": budget["value"],
+            "quantity": 1,
+            "email": budget["email"],
+            "id": str(budget["_id"]),
+            "auto_return": "approved"
+        }
+        
+        link = create_preference(preference).get("initPoint")
         
         email_details = EmailDetails(
             email=budget["email"],
@@ -71,9 +84,9 @@ async def send_budget_email_route(emailIn: EmailIn):
             type=budget["budget"]["type"],
             date=budget["budget"]["date"],
             value=str(budget["value"]),
-            payment_link="https://www.elodrinks.com/pagamento"  # Placeholder link
+            payment_link=link
         )
-        
+                
         send_email(email_details)
         
         return {"message": "Email enviado com sucesso"}
