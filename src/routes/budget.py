@@ -7,6 +7,7 @@ from src.services.budget.read import get_all_budgets, get_pending_budgets, get_b
 from src.services.payment import create_preference
 from src.services.email import send_email
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
