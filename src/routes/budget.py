@@ -119,8 +119,8 @@ async def webhook(request: Request):
 
             #TODO: Implementar logica de pegar o external reference como id do orçamento
             update_data = BudgetUpdate(
-                id=external_reference,
-                status="paid" if status == "approved" else "failed"
+                _id=external_reference,
+                new_status="paid" if status == "approved" else "failed"
             )
             
             await update_budget_status_and_value(update_data)
